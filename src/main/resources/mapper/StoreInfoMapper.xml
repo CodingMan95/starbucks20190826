@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eim.mapper.StoreInfoMapper">
+
+    <select id="selectByIdSet" resultType="com.eim.entity.StoreInfo">
+        SELECT
+        id, province, city, area, store_name
+        from
+        shop_info
+        WHERE city=#{city} and id IN
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getByPage" resultType="com.eim.entity.StoreInfo">
+        SELECT
+        id, province, city, area, store_name
+        from
+        shop_info
+        limit #{start}, #{num}
+    </select>
+
+    <select id="getProvince" resultType="String">
+        SELECT
+        province
+        FROM
+        shop_info
+        WHERE
+        id in
+        <foreach collection="array" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        GROUP BY
+        province
+    </select>
+
+    <select id="getCityByProvince" resultType="String">
+        SELECT
+        city
+        FROM
+        shop_info
+        WHERE
+        province = #{province} and id in
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        GROUP BY
+        city
+    </select>
+
+    <select id="getAreaByCity" resultType="String">
+        SELECT
+        area
+        FROM
+        shop_info
+        WHERE
+        city = #{city} and id in
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        GROUP BY
+        area
+    </select>
+
+    <select id="getStoreByArea" resultType="com.eim.entity.StoreInfo">
+        SELECT
+        id, store_name
+        FROM
+        shop_info
+        WHERE area = #{area} and id IN
+        <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <select id="getAllProvince" resultType="String">
+        SELECT
+        province
+        FROM
+        shop_info
+        GROUP BY
+        province
+    </select>
+
+    <select id="getAllCityByProvince" resultType="String">
+        SELECT
+        city
+        FROM
+        shop_info
+        WHERE
+        province = #{province}
+        GROUP BY
+        city
+    </select>
+
+    <select id="getAllAreaByCity" resultType="String">
+        SELECT
+        area
+        FROM
+        shop_info
+        WHERE
+        city = #{city}
+        GROUP BY
+        area
+    </select>
+
+    <select id="getAllStoreByArea" resultType="com.eim.entity.StoreInfo">
+        SELECT
+        id, store_name
+        FROM
+        shop_info
+        WHERE area = #{area}
+    </select>
+
+</mapper>

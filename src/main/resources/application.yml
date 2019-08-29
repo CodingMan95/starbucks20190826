@@ -1,0 +1,15 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /starbucks20190826
+spring:
+  profiles:
+    active: dev
+#  jackson:
+#    default-property-inclusion: non_null #返回数据为空不显示
+mybatis-plus:
+  type-aliases-package: com.eim.entity
+logging:
+  level:
+    root:
+    com.eim: debug

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eim.mapper.ActivityOrderMapper">
+
+    <select id="getNumOfActive" parameterType="Integer" resultType="Integer">
+        SELECT
+            sum(people_num)
+        FROM
+            activity_order
+        WHERE
+            activity_id = #{activeId}
+    </select>
+
+    <select id="selectData" resultType="com.eim.entity.ActivityOrder">
+        SELECT
+        a.order_id,
+        a.open_id,
+        a.name,
+        a.mobile,
+        a.address,
+        a.store_name,
+        a.activity_time,
+        w.nick_name
+        FROM
+        activity_order a
+        LEFT JOIN wechat_info w ON a.open_id = w.open_id
+
+        <trim prefix="where" prefixOverrides="and|or">
+
+            <if test=" activeId != null and activeId != 0">
+                and a.activity_id = #{activeId}
+            </if>
+
+            <if test=" province != null and province != ''">
+                and a.store_name like '%${province}%'
+            </if>
+
+            <if test=" city != null and city != ''">
+                and a.store_name like '%${city}%'
+            </if>
+
+            <if test=" area != null and area != ''">
+                and a.store_name like '%${area}%'
+            </if>
+
+            <if test="storeName != null and storeName != ''">
+                and a.store_name like '%${storeName}%'
+            </if>
+        </trim>
+    </select>
+
+</mapper>

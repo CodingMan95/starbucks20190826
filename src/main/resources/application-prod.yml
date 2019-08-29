@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver #spring.redis.jedis.pool.max-wait=-1
+    url: jdbc:mysql://39.104.125.243:3306/starbucks20190826?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false
+    username: root
+    password: root
+  jmx:
+    enabled: false
+    redis:
+      host: 111.231.221.220
+      port: 16379
+      password: 520541756_yj_redis
+      jedis:
+        pool:
+          max-idle: 100
+          max-active: 1000
+          min-idle: 1
