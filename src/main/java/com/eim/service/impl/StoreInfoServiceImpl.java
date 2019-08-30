@@ -94,17 +94,10 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
 
         List<StoreInfo> list = storeInfoMapper.getByPage(start, ConstantKit.PAGE_LIMIT);
         map.put("storeList", list);
-        int count = storeInfoMapper.selectCount(new QueryWrapper<>());
-        int totalPage;
-        if (count <= ConstantKit.PAGE_LIMIT) {
-            totalPage = 1;
-        } else if (count % ConstantKit.PAGE_LIMIT == 0) {
-            totalPage = count / ConstantKit.PAGE_LIMIT;
-        } else {
-            totalPage = count / ConstantKit.PAGE_LIMIT + 1;
-        }
 
-        map.put("totalPage", totalPage);
+        int totalStore = storeInfoMapper.selectCount(new QueryWrapper<>());
+
+        map.put("totalStore", totalStore);
         return map;
     }
 

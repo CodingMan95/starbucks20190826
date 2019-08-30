@@ -37,11 +37,10 @@ public class WechatServiceImpl implements WechatService {
         // 解析相应内容（转换成json对象）
         JSONObject json = JSONObject.parseObject(sr);
 
-
         if (null != json) {
             // 获取会话密钥（session_key）
             //String session_key = json.get("session_key").toString();
-            String openId = json.get("openId").toString();
+            String openId = json.get("openid").toString();
 
             int userCount = wechatMapper.selectCount(new QueryWrapper<WechatUser>().eq("open_id", openId));
             if (userCount == 0) {

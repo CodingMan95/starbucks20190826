@@ -1,5 +1,7 @@
 package com.eim.controller.common;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.eim.entity.StoreInfo;
 import com.eim.exception.BusinessException;
 import com.eim.kit.ConstantKit;
 import com.eim.model.ResultTemplate;
@@ -49,5 +51,15 @@ public class CommonController {
         String imgUrl = uploadService.uploadImg(file, baseUrl);
 
         return ResultTemplate.success(imgUrl);
+    }
+
+    @ApiOperation("校验门店编号是否存在")
+    @GetMapping("verifyStore.do")
+    public ResultTemplate verifyStore(@RequestParam String storeId){
+        int count = storeInfoService.count(new QueryWrapper<StoreInfo>().eq("store_id", storeId));
+        if (count > 0){
+            return ResultTemplate.success();
+        }
+        return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.HAVE_STOREID);
     }
 }

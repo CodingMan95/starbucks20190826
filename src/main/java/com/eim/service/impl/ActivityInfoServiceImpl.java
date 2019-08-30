@@ -5,21 +5,20 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.eim.entity.ActivityInfo;
 import com.eim.entity.Combo;
+import com.eim.entity.StoreInfo;
 import com.eim.exception.BusinessException;
 import com.eim.kit.ConstantKit;
 import com.eim.mapper.ActivityInfoMapper;
 import com.eim.mapper.ActivityOrderMapper;
 import com.eim.service.ActivityInfoService;
 import com.eim.service.ComboService;
+import com.eim.service.StoreInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -30,6 +29,8 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
     private ComboService comboService;
     @Autowired
     private ActivityOrderMapper orderMapper;
+    @Autowired
+    private StoreInfoService storeInfoService;
 
     @Override
     public List<ActivityInfo> getActivityByCity(String city) {
@@ -108,6 +109,30 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<ActivityInfo> getActiveOfStore(String storeId) {
+        StoreInfo storeInfo = storeInfoService.getOne(new QueryWrapper<StoreInfo>().select("id").eq("store_id", storeId));
+
+        List<ActivityInfo> infoList = activityInfoMapper.selectList(new QueryWrapper<ActivityInfo>().select("store_id", "active_id", "title"));
+        List<ActivityInfo> myActivity = new ArrayList<>();
+        for (ActivityInfo info : infoList) {
+            String[] ids = info.getStoreId().split(",");
+
+            int array[] = new int[ids.length];
+            for (int i = 0; i < ids.length; i++) {
+                array[i] = Integer.parseInt(ids[i]);
+            }
+
+            for (int id : array) {
+                if (id == storeInfo.getId()) {
+                    myActivity.add(info);
+                }
+            }
+
+        }
+        return myActivity;
     }
 
 }

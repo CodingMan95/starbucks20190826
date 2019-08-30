@@ -8,7 +8,7 @@
         from
             activity_info
         where
-            city like CONCAT('%',#{city},'%')
+            city like CONCAT('%',#{city},'%') and status = 1
     </select>
 
 </mapper>

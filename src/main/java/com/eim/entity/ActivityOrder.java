@@ -35,6 +35,9 @@ public class ActivityOrder {
     @ApiModelProperty(value = "预约的门店")
     private String storeName;
 
+    @ApiModelProperty(value = "预约的门店id")
+    private int storeId;
+
     @ApiModelProperty(value = "姓名")
     private String name;
 

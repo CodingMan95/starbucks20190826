@@ -36,4 +36,9 @@ public interface ActivityInfoService extends IService<ActivityInfo> {
      * 删除活动
      */
     boolean delete(int activeId);
+
+    /**
+     * 获取某一店铺参与的活动列表
+     */
+    List<ActivityInfo> getActiveOfStore(String storeId);
 }

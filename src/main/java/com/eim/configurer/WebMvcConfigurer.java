@@ -13,7 +13,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         //为所有接口统一配置请求头
         registry.addInterceptor(new CrossDomainInterceptor()).addPathPatterns("/**");
         //对接口进行拦截，鉴权通过则放行
-        registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/admin-user/**", "/store-admin/**");
+        registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/admin-user/**", "/store-admin/**", "/active-admin/**");
     }
 
 }

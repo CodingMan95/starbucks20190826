@@ -10,4 +10,6 @@ public interface ActivityOrderMapper extends BaseMapper<ActivityOrder> {
     int getNumOfActive(int activeId);
 
     List<ActivityOrder> selectData(String province, String city, String area, String storeName, Integer activeId);
+
+    List<ActivityOrder> selectDataOfStore(Integer activeId, Integer storeId);
 }

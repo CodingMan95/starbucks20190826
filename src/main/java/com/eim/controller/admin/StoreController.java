@@ -1,5 +1,6 @@
 package com.eim.controller.admin;
 
+import com.alibaba.fastjson.JSONObject;
 import com.eim.entity.StoreInfo;
 import com.eim.exception.BusinessException;
 import com.eim.kit.ConstantKit;
@@ -22,11 +23,18 @@ public class StoreController {
 
     @ApiOperation("新增、修改门店信息")
     @PostMapping("add.do")
-    public ResultTemplate add(@RequestBody StoreInfo storeInfo) {
-        if (StringUtils.isEmpty(storeInfo.getStoreId()) || StringUtils.isEmpty(storeInfo.getStoreName()) || StringUtils.isEmpty(storeInfo.getAddress())) {
+    public ResultTemplate add(@RequestParam String storeInfo) {
+        JSONObject jsStr = JSONObject.parseObject(storeInfo);
+
+        /**
+         * json对象转换成java对象
+         */
+        StoreInfo store = JSONObject.toJavaObject(jsStr, StoreInfo.class);
+
+        if (StringUtils.isEmpty(store.getStoreId()) || StringUtils.isEmpty(store.getStoreName()) || StringUtils.isEmpty(store.getAddress())) {
             throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
         }
-        boolean addStore = storeInfoService.addStore(storeInfo);
+        boolean addStore = storeInfoService.addStore(store);
         if (addStore) {
             return ResultTemplate.success();
         }

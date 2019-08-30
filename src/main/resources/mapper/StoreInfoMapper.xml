@@ -15,7 +15,7 @@
 
     <select id="getByPage" resultType="com.eim.entity.StoreInfo">
         SELECT
-        id, province, city, area, store_name
+        id, province, city, area, store_name, store_id, address
         from
         shop_info
         limit #{start}, #{num}

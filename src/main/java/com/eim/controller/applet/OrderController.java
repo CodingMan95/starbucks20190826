@@ -23,6 +23,9 @@ public class OrderController {
     @ApiOperation("报名预约")
     @PostMapping("add.do")
     public ResultTemplate addOrder(@RequestBody ActivityOrder order) {
+        if (null == order.getActivityTime() || null == order.getStoreName() || null == order.getOpenId()) {
+            throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
+        }
         boolean add;
         try {
             add = orderService.addActivity(order);

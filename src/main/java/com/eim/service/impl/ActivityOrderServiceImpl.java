@@ -29,12 +29,11 @@ public class ActivityOrderServiceImpl extends ServiceImpl<ActivityOrderMapper, A
     private ActivityInfoService activityInfoService;
     @Autowired
     private ComboService comboService;
+    @Autowired
+    private StoreInfoService storeInfoService;
 
     @Override
     public boolean addActivity(ActivityOrder order) {
-        if (null == order.getActivityTime() || null == order.getStoreName() || null == order.getOpenId()) {
-            throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
-        }
         order.setStatus(ConstantKit.ORDER_SUCCESS);
         order.setAddTime(new Date());
         activityOrderMapper.insert(order);
@@ -72,22 +71,35 @@ public class ActivityOrderServiceImpl extends ServiceImpl<ActivityOrderMapper, A
         ActivityOrder activityOrder = activityOrderMapper.selectOne(new QueryWrapper<ActivityOrder>()
                 .select("order_id", "activity_id", "activity_time", "store_name", "combo_id", "people_num", "total_cost").eq("order_id", orderId));
 
+        if (null == activityOrder) {
+            return null;
+        }
+
         ActivityInfo activityInfo = activityInfoService.getOne(new QueryWrapper<ActivityInfo>()
                 .select("banner_url", "title", "introduce").eq("active_id", activityOrder.getActivityId()));
         activityOrder.setBannerUrl(activityInfo.getBannerUrl());
         activityOrder.setTitle(activityInfo.getTitle());
         activityOrder.setIntroduce(activityInfo.getIntroduce());
 
-        Combo combo = comboService.getOne(new QueryWrapper<Combo>().select("pic", "name").eq("id", activityOrder.getComboId()));
-        activityOrder.setComboName(combo.getName());
-        activityOrder.setComboPic(combo.getPic());
-
+        if (activityOrder.getComboId() != 0) {
+            Combo combo = comboService.getOne(new QueryWrapper<Combo>().select("pic", "name").eq("id", activityOrder.getComboId()));
+            activityOrder.setComboName(combo.getName());
+            activityOrder.setComboPic(combo.getPic());
+        }
         return activityOrder;
     }
 
     @Override
     public List<ActivityOrder> selectData(String province, String city, String area, String storeName, Integer activeId) {
         List<ActivityOrder> orders = activityOrderMapper.selectData(province, city, area, storeName, activeId);
+        return orders;
+    }
+
+    @Override
+    public List<ActivityOrder> selectDataOfStore(Integer activeId, String storeId) {
+        StoreInfo storeInfo = storeInfoService.getOne(new QueryWrapper<StoreInfo>().select("id").eq("store_id", storeId));
+
+        List<ActivityOrder> orders = activityOrderMapper.selectDataOfStore(activeId, storeInfo.getId());
         return orders;
     }
 }
