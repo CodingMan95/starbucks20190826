@@ -11,4 +11,13 @@
             city like CONCAT('%',#{city},'%') and status = 1
     </select>
 
+    <select id="getActivityByPage" resultType="com.eim.entity.ActivityInfo">
+        select
+        active_id, title, store_id, status
+        from
+        activity_info
+        ORDER BY active_id DESC
+        limit #{start}, #{num}
+    </select>
+
 </mapper>

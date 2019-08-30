@@ -11,4 +11,6 @@ public interface ComboService extends IService<Combo> {
      * 获取套餐列表
      */
     List<Combo> selectByIdSet(@Param("ids") int[] ids);
+
+    int add(Combo combo);
 }

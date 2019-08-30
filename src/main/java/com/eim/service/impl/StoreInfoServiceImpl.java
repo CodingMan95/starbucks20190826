@@ -71,10 +71,10 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
     @Override
     public boolean deleteStore(int id) {
 
+        StoreInfo storeInfo = storeInfoMapper.selectOne(new QueryWrapper<StoreInfo>().eq("id", id).select("store_id"));
         int delete = storeInfoMapper.delete(new QueryWrapper<StoreInfo>().eq("id", id));
         if (delete == 1) {
             //删除门店对应的账号信息
-            StoreInfo storeInfo = storeInfoMapper.selectOne(new QueryWrapper<StoreInfo>().eq("id", id).select("store_id"));
             boolean remove = adminUserService.remove(new QueryWrapper<AdminUser>().eq("store_id", storeInfo.getStoreId()));
             return remove;
         }

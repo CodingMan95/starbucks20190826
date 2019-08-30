@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ComboMapper extends BaseMapper<Combo> {
     List<Combo> selectByIdSet(int[] ids);
+
+    boolean addCombo(Combo combo);
 }

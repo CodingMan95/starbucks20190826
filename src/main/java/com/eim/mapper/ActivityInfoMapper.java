@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ActivityInfoMapper extends BaseMapper<ActivityInfo> {
     List<ActivityInfo> getActivityByCity(String city);
+
+    List<ActivityInfo> getActivityByPage(int start, int num);
 }

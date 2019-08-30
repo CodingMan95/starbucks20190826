@@ -71,11 +71,19 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
     }
 
     @Override
-    public List<Map> allActivity() {
-        List<Map> list = new ArrayList<>();
+    public Map<String, Object> allActivity(int page) {
+        List list = new ArrayList<>();
+        Map<String, Object> allMap = new HashMap<>();
 
-        List<ActivityInfo> activityInfoList = activityInfoMapper.selectList(new QueryWrapper<ActivityInfo>()
-                .select("active_id", "title", "store_id", "status"));
+        /*List<ActivityInfo> activityInfoList = activityInfoMapper.selectList(new QueryWrapper<ActivityInfo>()
+                .select("active_id", "title", "store_id", "status"));*/
+        int start;
+        if (page == 1) {
+            start = 0;
+        } else {
+            start = (page - 1) * ConstantKit.PAGE_LIMIT;
+        }
+        List<ActivityInfo> activityInfoList = activityInfoMapper.getActivityByPage(start, ConstantKit.PAGE_LIMIT);
         if (null != activityInfoList) {
             for (ActivityInfo info : activityInfoList) {
                 Map<String, Object> map = new HashMap<>();
@@ -89,11 +97,15 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
                 //参与活动总人数
                 int peopleNum = orderMapper.getNumOfActive(info.getActiveId());
                 map.put("peopleNum", peopleNum);
-
+                //活动id
+                map.put("activeId", info.getActiveId());
                 list.add(map);
             }
         }
-        return list;
+        Integer count = activityInfoMapper.selectCount(new QueryWrapper<>());
+        allMap.put("activity", list);
+        allMap.put("activeNum", count);
+        return allMap;
     }
 
     @Override
@@ -115,7 +127,7 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
     public List<ActivityInfo> getActiveOfStore(String storeId) {
         StoreInfo storeInfo = storeInfoService.getOne(new QueryWrapper<StoreInfo>().select("id").eq("store_id", storeId));
 
-        List<ActivityInfo> infoList = activityInfoMapper.selectList(new QueryWrapper<ActivityInfo>().select("store_id", "active_id", "title"));
+        List<ActivityInfo> infoList = activityInfoMapper.selectList(new QueryWrapper<ActivityInfo>().select("store_id", "active_id", "title", "active_time", "create_time", "status"));
         List<ActivityInfo> myActivity = new ArrayList<>();
         for (ActivityInfo info : infoList) {
             String[] ids = info.getStoreId().split(",");

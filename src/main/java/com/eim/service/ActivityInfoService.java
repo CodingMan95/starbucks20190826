@@ -23,9 +23,9 @@ public interface ActivityInfoService extends IService<ActivityInfo> {
     boolean addActivityInfo(ActivityInfo activityInfo);
 
     /**
-     * 查看所有活动
+     * 分页查看所有活动
      */
-    List<Map> allActivity();
+    Map<String, Object> allActivity(int page);
 
     /**
      * 更新活动状态

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -19,6 +20,16 @@ public class ComboServiceImpl extends ServiceImpl<ComboMapper, Combo> implements
     @Override
     public List<Combo> selectByIdSet(int[] ids) {
         return comboMapper.selectByIdSet(ids);
+    }
+
+    @Override
+    public int add(Combo combo) {
+        combo.setCreateTime(new Date());
+        boolean insert = comboMapper.addCombo(combo);
+        if (insert){
+            return combo.getId();
+        }
+        return 0;
     }
 
 }

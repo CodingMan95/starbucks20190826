@@ -18,6 +18,7 @@
         id, province, city, area, store_name, store_id, address
         from
         shop_info
+        ORDER BY id DESC
         limit #{start}, #{num}
     </select>
 

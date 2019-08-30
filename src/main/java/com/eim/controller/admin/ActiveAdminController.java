@@ -43,10 +43,10 @@ public class ActiveAdminController {
 
     @ApiOperation("超级管理员-获取所有已创建活动")
     @GetMapping("list.do")
-    public ResultTemplate list() {
-        List<Map> list = activityInfoService.allActivity();
+    public ResultTemplate list(@RequestParam Integer page) {
+        Map<String, Object> stringObjectMap = activityInfoService.allActivity(page);
 
-        return ResultTemplate.success(list);
+        return ResultTemplate.success(stringObjectMap);
     }
 
     @ApiOperation("超级管理员-修改活动状态")
