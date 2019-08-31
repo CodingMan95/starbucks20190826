@@ -14,13 +14,14 @@
     <select id="selectData" resultType="com.eim.entity.ActivityOrder">
         SELECT
         a.order_id,
-        a.open_id,
+        a.store_name,
         a.name,
         a.mobile,
         a.address,
         a.store_name,
         a.activity_time,
-        w.nick_name
+        w.nick_name,
+        w.avatar_url
         FROM
         activity_order a
         LEFT JOIN wechat_info w ON a.open_id = w.open_id
@@ -31,35 +32,36 @@
                 and a.activity_id = #{activeId}
             </if>
 
-            <if test=" province != null and province != ''">
+            <if test=" province != null or province != ''">
                 and a.store_name like '%${province}%'
             </if>
 
-            <if test=" city != null and city != ''">
+            <if test=" city != null or city != ''">
                 and a.store_name like '%${city}%'
             </if>
 
-            <if test=" area != null and area != ''">
+            <if test=" area != null or area != ''">
                 and a.store_name like '%${area}%'
             </if>
 
-            <if test="storeName != null and storeName != ''">
+            <if test="storeName != null or storeName != ''">
                 and a.store_name like '%${storeName}%'
             </if>
         </trim>
+        limit #{start}, #{num}
     </select>
 
 
     <select id="selectDataOfStore" resultType="com.eim.entity.ActivityOrder">
         SELECT
         a.order_id,
-        a.open_id,
         a.name,
         a.mobile,
         a.address,
         a.store_name,
         a.activity_time,
-        w.nick_name
+        w.nick_name,
+        w.avatar_url
         FROM
         activity_order a
         LEFT JOIN wechat_info w ON a.open_id = w.open_id
@@ -71,9 +73,10 @@
             </if>
 
             <if test="storeId != null and storeId != 0">
-                and a.storeId = #{storeId}
+                and a.store_id = #{storeId}
             </if>
         </trim>
+        limit #{page}, #{num}
     </select>
 
 </mapper>

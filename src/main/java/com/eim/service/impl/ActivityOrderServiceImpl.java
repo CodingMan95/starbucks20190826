@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -69,7 +71,7 @@ public class ActivityOrderServiceImpl extends ServiceImpl<ActivityOrderMapper, A
     @Override
     public ActivityOrder orderDetail(int orderId) {
         ActivityOrder activityOrder = activityOrderMapper.selectOne(new QueryWrapper<ActivityOrder>()
-                .select("order_id", "activity_id", "activity_time", "store_name", "combo_id", "people_num", "total_cost").eq("order_id", orderId));
+                .select("order_id", "activity_id", "activity_time", "store_name", "combo_id", "people_num", "total_cost", "status").eq("order_id", orderId));
 
         if (null == activityOrder) {
             return null;
@@ -90,16 +92,41 @@ public class ActivityOrderServiceImpl extends ServiceImpl<ActivityOrderMapper, A
     }
 
     @Override
-    public List<ActivityOrder> selectData(String province, String city, String area, String storeName, Integer activeId) {
-        List<ActivityOrder> orders = activityOrderMapper.selectData(province, city, area, storeName, activeId);
-        return orders;
+    public Map<String, Object> selectData(String province, String city, String area, String storeName, Integer activeId, int page, int num) {
+        Map<String, Object> map = new HashMap<>();
+        int start;
+        if (page == 1) {
+            start = 0;
+        } else {
+            start = (page - 1) * num;
+        }
+
+        List<ActivityOrder> orders = activityOrderMapper.selectData(province, city, area, storeName, activeId, start, num);
+        Integer count = activityOrderMapper.selectCount(new QueryWrapper<ActivityOrder>().eq("activity_id", activeId));
+        map.put("orderList", orders);
+        map.put("total", count);
+        return map;
     }
 
     @Override
-    public List<ActivityOrder> selectDataOfStore(Integer activeId, String storeId) {
+    public Map<String, Object> selectDataOfStore(Integer activeId, String storeId, int page, int num) {
+        Map<String, Object> map = new HashMap<>();
+
+        int start;
+        if (page == 1) {
+            start = 0;
+        } else {
+            start = (page - 1) * num;
+        }
+
         StoreInfo storeInfo = storeInfoService.getOne(new QueryWrapper<StoreInfo>().select("id").eq("store_id", storeId));
 
-        List<ActivityOrder> orders = activityOrderMapper.selectDataOfStore(activeId, storeInfo.getId());
-        return orders;
+        List<ActivityOrder> orders = activityOrderMapper.selectDataOfStore(activeId, storeInfo.getId(), start, num);
+        map.put("orderList", orders);
+
+        StoreInfo one = storeInfoService.getOne(new QueryWrapper<StoreInfo>().eq("store_id", storeId).select("id"));
+        int count = activityOrderMapper.selectCount(new QueryWrapper<ActivityOrder>().eq("activity_id", activeId).eq("store_id", one.getId()));
+        map.put("total", count);
+        return map;
     }
 }

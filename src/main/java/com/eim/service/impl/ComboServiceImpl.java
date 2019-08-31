@@ -23,10 +23,13 @@ public class ComboServiceImpl extends ServiceImpl<ComboMapper, Combo> implements
     }
 
     @Override
-    public int add(Combo combo) {
+    public int add(String name, String pic) {
+        Combo combo = new Combo();
+        combo.setName(name);
+        combo.setPic(pic);
         combo.setCreateTime(new Date());
         boolean insert = comboMapper.addCombo(combo);
-        if (insert){
+        if (insert) {
             return combo.getId();
         }
         return 0;

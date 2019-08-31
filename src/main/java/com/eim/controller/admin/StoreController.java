@@ -56,11 +56,11 @@ public class StoreController {
 
     @ApiOperation("分页查询门店信息")
     @GetMapping("all.do")
-    public ResultTemplate all(@RequestParam int page) {
+    public ResultTemplate all(@RequestParam int page, @RequestParam int limit) {
         if (0 == page) {
             throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
         }
-        Map<String, Object> map = storeInfoService.getByPage(page);
+        Map<String, Object> map = storeInfoService.getByPage(page, limit);
         return ResultTemplate.success(map);
     }
 

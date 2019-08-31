@@ -29,6 +29,8 @@ public final class ConstantKit {
 
     public static final String CHANGE_ERROR = "修改失败";
 
+    public static final String ACTIVITY_OVER = "活动已结束，无法修改活动状态";
+
     /**
      * 返回码：请求成功
      */

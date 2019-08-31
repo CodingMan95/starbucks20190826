@@ -1,19 +1,23 @@
 package com.eim.controller.admin;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.eim.entity.ActivityInfo;
 import com.eim.entity.ActivityOrder;
+import com.eim.entity.StoreInfo;
 import com.eim.exception.BusinessException;
 import com.eim.kit.ConstantKit;
 import com.eim.model.ResultTemplate;
 import com.eim.service.ActivityInfoService;
 import com.eim.service.ActivityOrderService;
+import com.eim.util.HttpRequest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,11 +34,16 @@ public class ActiveAdminController {
 
     @ApiOperation("超级管理员-创建活动、修改活动详情")
     @PostMapping("add.do")
-    public ResultTemplate add(@RequestBody ActivityInfo info) {
-        if (null == info.getCoverUrl() || null == info.getBannerUrl() || null == info.getTitle() || null == info.getIntroduce()) {
+    public ResultTemplate add(@RequestParam String info) {
+        JSONObject jsStr = JSONObject.parseObject(info);
+        /**
+         * json对象转换成java对象
+         */
+        ActivityInfo store = JSONObject.toJavaObject(jsStr, ActivityInfo.class);
+        if (null == store.getCoverUrl() || null == store.getBannerUrl() || null == store.getTitle() || null == store.getIntroduce()) {
             throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
         }
-        boolean add = activityInfoService.addActivityInfo(info);
+        boolean add = activityInfoService.addActivityInfo(store);
         if (add) {
             return ResultTemplate.success();
         }
@@ -55,9 +64,11 @@ public class ActiveAdminController {
         if (activeId == 0 || null == status) {
             throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
         }
-        boolean updateStatus = activityInfoService.updateStatus(activeId, status);
-        if (updateStatus) {
+        String updateStatus = activityInfoService.updateStatus(activeId, status);
+        if (updateStatus.equals(ConstantKit.SUCCESS)) {
             return ResultTemplate.success();
+        } else if (updateStatus.equals(ConstantKit.ACTIVITY_OVER)) {
+            return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.ACTIVITY_OVER);
         }
         return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.FAIL);
     }
@@ -77,54 +88,28 @@ public class ActiveAdminController {
 
     @ApiOperation("超级管理员-查看活动数据")
     @GetMapping("getData.do")
-    public ResultTemplate getData(@RequestParam(required = false) String province, @RequestParam(required = false) String city, @RequestParam(required = false) String area, @RequestParam(required = false) String storeName, @RequestParam Integer activeId) {
-        List<ActivityOrder> activityOrders = activityOrderService.selectData(province, city, area, storeName, activeId);
+    public ResultTemplate getData(@RequestParam(required = false) String province, @RequestParam(required = false) String city, @RequestParam(required = false) String area, @RequestParam(required = false) String storeName, @RequestParam Integer activeId, @RequestParam int page, @RequestParam int limit) {
+        Map<String, Object> activityOrders = activityOrderService.selectData(province, city, area, storeName, activeId, page, limit);
         return ResultTemplate.success(activityOrders);
     }
 
-    @ApiIgnore
     @ApiOperation("超级管理员-查看活动详情")
     @GetMapping("getDetail.do")
     public ResultTemplate getDetail(@RequestParam Integer activeId) {
-        return ResultTemplate.success();
-    }
-
-    @ApiIgnore
-    @ApiOperation("测试接口")
-    @GetMapping("test.do")
-    public ResultTemplate test() throws ParseException {
-        long time = new Date().getTime();
-        DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
-
-        List<ActivityInfo> list = activityInfoService.list(new QueryWrapper<ActivityInfo>().select("active_id", "active_time"));
-        for (ActivityInfo activityInfo : list) {
-            //取出时间把列表中的最大时间
-            String[] split = activityInfo.getActiveTime().split(",");
-            String de_time = split[split.length - 1];
-
-            //计算活动结束时间离现在时间差
-            Date d2 = df1.parse(de_time);
-            Calendar c = Calendar.getInstance();
-            c.setTime(d2);
-            c.add(Calendar.DAY_OF_MONTH, 1);
-
-            long diff1 = c.getTime().getTime() - time;
-            if (diff1 <= 0) {
-                activityInfoService.updateStatus(activityInfo.getActiveId(), false);
-            }
-
+        if (activeId == 0 || null == activeId) {
+            throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
         }
-
-        return ResultTemplate.success();
+        ActivityInfo info = activityInfoService.ActivityDetail(activeId);
+        return ResultTemplate.success(info);
     }
 
     @ApiOperation("店铺管理员-查看本店数据")
     @GetMapping("getDataOfStore.do")
-    public ResultTemplate getDataOfStore(@RequestParam Integer activeId, @RequestParam String storeId) {
+    public ResultTemplate getDataOfStore(@RequestParam Integer activeId, @RequestParam String storeId, @RequestParam int page, @RequestParam int limit) {
         if (activeId == 0 || null == storeId) {
             throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
         }
-        List<ActivityOrder> activityOrders = activityOrderService.selectDataOfStore(activeId, storeId);
+        Map<String, Object> activityOrders = activityOrderService.selectDataOfStore(activeId, storeId, page, limit);
         return ResultTemplate.success(activityOrders);
     }
 

@@ -6,12 +6,12 @@ spring:
     password: root
   jmx:
     enabled: false
-    redis:
-      host: 111.231.221.220
-      port: 16379
-      password: 520541756_yj_redis
-      jedis:
-        pool:
-          max-idle: 100
-          max-active: 1000
-          min-idle: 1
+  redis:
+    host: 47.100.165.79
+    port: 6379
+    password: 19950425
+    jedis:
+      pool:
+        max-idle: 100
+        max-active: 1000
+        min-idle: 1

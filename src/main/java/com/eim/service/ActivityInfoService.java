@@ -30,7 +30,7 @@ public interface ActivityInfoService extends IService<ActivityInfo> {
     /**
      * 更新活动状态
      */
-    boolean updateStatus(int activeId, boolean status);
+    String updateStatus(int activeId, boolean status);
 
     /**
      * 删除活动
@@ -41,4 +41,7 @@ public interface ActivityInfoService extends IService<ActivityInfo> {
      * 获取某一店铺参与的活动列表
      */
     List<ActivityInfo> getActiveOfStore(String storeId);
+
+    ActivityInfo ActivityDetail(int activeId);
+
 }

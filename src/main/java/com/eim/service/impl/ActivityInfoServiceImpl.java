@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -60,12 +63,14 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
 
     @Override
     public boolean addActivityInfo(ActivityInfo activityInfo) {
+        activityInfo.setStatus(true);
+        activityInfo.setCreateTime(new Date());
         //创建活动
-        if (activityInfo.getActiveId() != 0) {
+        if (activityInfo.getActiveId() == 0) {
             activityInfoMapper.insert(activityInfo);
         } else {
             //更新活动
-            activityInfoMapper.updateById(activityInfo);
+            activityInfoMapper.update(activityInfo, new UpdateWrapper<ActivityInfo>().eq("active_id", activityInfo.getActiveId()));
         }
         return true;
     }
@@ -109,9 +114,34 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
     }
 
     @Override
-    public boolean updateStatus(int activeId, boolean status) {
-        boolean update = update(new UpdateWrapper<ActivityInfo>().set("status", status).eq("active_id", activeId));
-        return update;
+    public String updateStatus(int activeId, boolean status) {
+        ActivityInfo activityInfo = activityInfoMapper.selectOne(new QueryWrapper<ActivityInfo>().select("active_time").eq("active_id", activeId));
+        //取出时间列表中的最大时间
+
+        DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
+        String[] split = activityInfo.getActiveTime().split(",");
+        String de_time = split[split.length - 1];
+
+        //计算活动结束时间离现在时间差
+        Date d2 = null;
+        try {
+            d2 = df1.parse(de_time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(d2);
+        c.add(Calendar.DAY_OF_MONTH, 1);
+
+        long diff1 = c.getTime().getTime() - (new Date().getTime());
+        if (diff1 >= 0) {
+            boolean update = update(new UpdateWrapper<ActivityInfo>().set("status", status).eq("active_id", activeId));
+            if (update) {
+                return ConstantKit.SUCCESS;
+            }
+            return ConstantKit.FAIL;
+        }
+        return ConstantKit.ACTIVITY_OVER;
     }
 
     @Override
@@ -127,7 +157,7 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
     public List<ActivityInfo> getActiveOfStore(String storeId) {
         StoreInfo storeInfo = storeInfoService.getOne(new QueryWrapper<StoreInfo>().select("id").eq("store_id", storeId));
 
-        List<ActivityInfo> infoList = activityInfoMapper.selectList(new QueryWrapper<ActivityInfo>().select("store_id", "active_id", "title", "active_time", "create_time", "status"));
+        List<ActivityInfo> infoList = activityInfoMapper.selectList(new QueryWrapper<ActivityInfo>().select("store_id", "active_id", "title", "active_time", "status", "cover_url"));
         List<ActivityInfo> myActivity = new ArrayList<>();
         for (ActivityInfo info : infoList) {
             String[] ids = info.getStoreId().split(",");
@@ -145,6 +175,32 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
 
         }
         return myActivity;
+    }
+
+    @Override
+    public ActivityInfo ActivityDetail(int activeId) {
+        ActivityInfo info = activityInfoMapper.selectOne(new QueryWrapper<ActivityInfo>()
+                .eq("active_id", activeId)
+                .select("active_id", "banner_url", "title", "introduce", "active_time", "apply_info", "combo_id", "combo_price", "store_id", "cover_url", "city"));
+
+        //获取套餐列表
+        String[] ids = info.getComboId().split(",");
+        int array[] = new int[ids.length];
+        for (int i = 0; i < ids.length; i++) {
+            array[i] = Integer.parseInt(ids[i]);
+        }
+        List<Combo> combos = comboService.selectByIdSet(array);
+        info.setComboList(combos);
+
+        //获取门店列表
+        String[] strings = info.getStoreId().split(",");
+        int storeIds[] = new int[strings.length];
+        for (int i = 0; i < strings.length; i++) {
+            storeIds[i] = Integer.parseInt(strings[i]);
+        }
+        List<StoreInfo> storeInfos = storeInfoService.selectStoreByIdSet(storeIds);
+        info.setStoreInfoList(storeInfos);
+        return info;
     }
 
 }

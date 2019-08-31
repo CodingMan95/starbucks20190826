@@ -31,7 +31,6 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
     @Autowired
     private AdminUserService adminUserService;
 
-
     @Override
     public List<StoreInfo> selectByIdSet(String city, int activeId) {
         ActivityInfo activityInfo = activityInfoService.getOne(new QueryWrapper<ActivityInfo>().eq("active_id", activeId).select("store_id"));
@@ -82,17 +81,17 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
     }
 
     @Override
-    public Map<String, Object> getByPage(int page) {
+    public Map<String, Object> getByPage(int page, int limit) {
         Map<String, Object> map = new HashMap<>();
 
         int start;
         if (page == 1) {
             start = 0;
         } else {
-            start = (page - 1) * ConstantKit.PAGE_LIMIT;
+            start = (page - 1) * limit;
         }
 
-        List<StoreInfo> list = storeInfoMapper.getByPage(start, ConstantKit.PAGE_LIMIT);
+        List<StoreInfo> list = storeInfoMapper.getByPage(start, limit);
         map.put("storeList", list);
 
         int totalStore = storeInfoMapper.selectCount(new QueryWrapper<>());
@@ -146,5 +145,11 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
             map.put("store", store);
         }
         return map;
+    }
+
+    @Override
+    public List<StoreInfo> selectStoreByIdSet(int[] ids) {
+        List<StoreInfo> storeInfoList = storeInfoMapper.selectStoreByIdSet(ids);
+        return storeInfoList;
     }
 }

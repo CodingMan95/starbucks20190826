@@ -115,4 +115,16 @@
         WHERE area = #{area}
     </select>
 
+
+    <select id="selectStoreByIdSet" resultType="com.eim.entity.StoreInfo">
+        SELECT
+        id,store_name
+        from
+        shop_info
+        WHERE id IN
+        <foreach collection="array" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
 </mapper>

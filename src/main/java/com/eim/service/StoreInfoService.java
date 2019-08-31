@@ -26,9 +26,11 @@ public interface StoreInfoService extends IService<StoreInfo> {
     /**
      * 分页查询门店信息
      */
-    Map<String, Object> getByPage(int page);
+    Map<String, Object> getByPage(int page, int limit);
 
     Map<String, Object> getStoreLimit(int type, String parm, int activeId);
 
     Map<String, Object> getAllStore(int type, String parm);
+
+    List<StoreInfo> selectStoreByIdSet(int[] ids);
 }

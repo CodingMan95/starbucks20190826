@@ -5,6 +5,7 @@ import com.eim.entity.ActivityInfo;
 import com.eim.entity.ActivityOrder;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ActivityOrderService extends IService<ActivityOrder> {
     /**
@@ -24,10 +25,10 @@ public interface ActivityOrderService extends IService<ActivityOrder> {
      */
     ActivityOrder orderDetail(int orderId);
 
-    List<ActivityOrder> selectData(String province, String city, String area, String storeName, Integer activeId);
+    Map<String, Object> selectData(String province, String city, String area, String storeName, Integer activeId, int start, int num);
 
     /**
      * 查看店铺的数据
      */
-    List<ActivityOrder> selectDataOfStore(Integer activeId, String storeId);
+    Map<String, Object> selectDataOfStore(Integer activeId, String storeId, int page, int num);
 }

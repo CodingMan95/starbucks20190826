@@ -30,6 +30,10 @@ public class ActivityInfo {
     private String comboId;
     @ApiModelProperty(value = "套餐列表", hidden = true)
     private List<Combo> comboList;
+
+    @ApiModelProperty(value = "店铺列表", hidden = true)
+    private List<StoreInfo> storeInfoList;
+
     @ApiModelProperty(value = "套餐价格")
     private double comboPrice;
     @ApiModelProperty(value = "报名填写信息(用,隔开)")
