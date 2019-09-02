@@ -31,4 +31,10 @@ public interface ActivityOrderService extends IService<ActivityOrder> {
      * 查看店铺的数据
      */
     Map<String, Object> selectDataOfStore(Integer activeId, String storeId, int page, int num);
+
+    /**
+     * 店员确认签到
+     */
+    boolean sign(int orderId);
+
 }

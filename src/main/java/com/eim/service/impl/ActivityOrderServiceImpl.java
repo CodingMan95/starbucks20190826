@@ -1,6 +1,7 @@
 package com.eim.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.eim.entity.ActivityInfo;
 import com.eim.entity.ActivityOrder;
@@ -102,9 +103,11 @@ public class ActivityOrderServiceImpl extends ServiceImpl<ActivityOrderMapper, A
         }
 
         List<ActivityOrder> orders = activityOrderMapper.selectData(province, city, area, storeName, activeId, start, num);
-        Integer count = activityOrderMapper.selectCount(new QueryWrapper<ActivityOrder>().eq("activity_id", activeId));
+        int count = activityOrderMapper.selectTotal(province, city, area, storeName, activeId);
+        int signNum = activityOrderMapper.selectSignNum(province, city, area, storeName, activeId);
         map.put("orderList", orders);
         map.put("total", count);
+        map.put("signNum", signNum);
         return map;
     }
 
@@ -128,5 +131,11 @@ public class ActivityOrderServiceImpl extends ServiceImpl<ActivityOrderMapper, A
         int count = activityOrderMapper.selectCount(new QueryWrapper<ActivityOrder>().eq("activity_id", activeId).eq("store_id", one.getId()));
         map.put("total", count);
         return map;
+    }
+
+    @Override
+    public boolean sign(int orderId) {
+        boolean update = update(new UpdateWrapper<ActivityOrder>().eq("order_id", orderId).set("status", 2));
+        return update;
     }
 }

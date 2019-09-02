@@ -14,7 +14,7 @@ public interface StoreInfoMapper extends BaseMapper<StoreInfo> {
 
     List<String> getAreaByCity(String city, int[] ids);
 
-    List<StoreInfo> getStoreByArea(String area, int[] ids);
+    List<StoreInfo> getStoreByArea(String area, String city, int[] ids);
 
     List<String> getProvince(int[] ids);
 
@@ -22,7 +22,7 @@ public interface StoreInfoMapper extends BaseMapper<StoreInfo> {
 
     List<String> getAllAreaByCity(String city);
 
-    List<StoreInfo> getAllStoreByArea(String area);
+    List<StoreInfo> getAllStoreByArea(String area, String city);
 
     List<String> getAllProvince();
 

@@ -66,6 +66,7 @@ public final class ConstantKit {
 
     public static final String HAVE_STORE = "店铺已存在，请勿重复添加";
     public static final String HAVE_STOREID = "店铺编号已存在";
+    public static final String HAVE_STORENAME = "店铺名称已存在";
 
     public static final int ORDER_FAIL = 0;
     public static final int ORDER_SUCCESS = 1;

@@ -69,7 +69,7 @@
         id, store_name
         FROM
         shop_info
-        WHERE area = #{area} and id IN
+        WHERE area = #{area} and city = #{city} and id IN
         <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
@@ -112,7 +112,7 @@
         id, store_name
         FROM
         shop_info
-        WHERE area = #{area}
+        WHERE area = #{area} and city = #{city}
     </select>
 
 

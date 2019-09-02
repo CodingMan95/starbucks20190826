@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = "通用接口管理")
@@ -28,14 +29,14 @@ public class CommonController {
 
     @ApiOperation("获取省市区及门店")
     @GetMapping("getByType.do")
-    public ResultTemplate getAll(@RequestParam int type, @RequestParam(required = false) String parm, @RequestParam(required = false) Integer activeId) {
+    public ResultTemplate getAll(@RequestParam int type, @RequestParam(required = false) String parm, @RequestParam(required = false) Integer activeId, @RequestParam(required = false) String cityName) {
         Map<String, Object> map;
         if (null == activeId || activeId == 0) {
             //获取全部省市区及门店
-            map = storeInfoService.getAllStore(type, parm);
+            map = storeInfoService.getAllStore(type, parm, cityName);
         } else {
             //获取参与活动的省市区及门店
-            map = storeInfoService.getStoreLimit(type, parm, activeId);
+            map = storeInfoService.getStoreLimit(type, parm, cityName, activeId);
         }
         return ResultTemplate.success(map);
     }
@@ -55,11 +56,31 @@ public class CommonController {
 
     @ApiOperation("校验门店编号是否存在")
     @GetMapping("verifyStore.do")
-    public ResultTemplate verifyStore(@RequestParam String storeId){
+    public ResultTemplate verifyStore(@RequestParam String storeId) {
         int count = storeInfoService.count(new QueryWrapper<StoreInfo>().eq("store_id", storeId));
-        if (count > 0){
+        if (count == 0) {
             return ResultTemplate.success();
         }
         return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.HAVE_STOREID);
+    }
+
+    @ApiOperation("校验门店名称是否存在")
+    @GetMapping("verifyStoreName.do")
+    public ResultTemplate verifyStoreName(@RequestParam String storeName) {
+        int count = storeInfoService.count(new QueryWrapper<StoreInfo>().eq("store_name", storeName));
+        if (count == 0) {
+            return ResultTemplate.success();
+        }
+        return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.HAVE_STORENAME);
+    }
+
+    @ApiOperation("查询全省/市全部门店")
+    @GetMapping("getStoreByType.do")
+    public ResultTemplate getStoreByType(@RequestParam int type, @RequestParam String parm) {
+        if (StringUtils.isEmpty(parm)) {
+            throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
+        }
+        List<StoreInfo> store = storeInfoService.getStoreByType(type, parm);
+        return ResultTemplate.success(store);
     }
 }

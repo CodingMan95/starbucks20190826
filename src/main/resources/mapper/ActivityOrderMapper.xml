@@ -11,6 +11,67 @@
             activity_id = #{activeId}
     </select>
 
+    <select id="selectTotal" resultType="Integer">
+        SELECT
+        count(1)
+        FROM
+        activity_order
+
+        <trim prefix="where" prefixOverrides="and|or">
+
+            <if test=" activeId != null and activeId != 0">
+                and activity_id = #{activeId}
+            </if>
+
+            <if test=" province != null or province != ''">
+                and store_name like '%${province}%'
+            </if>
+
+            <if test=" city != null or city != ''">
+                and store_name like '%${city}%'
+            </if>
+
+            <if test=" area != null or area != ''">
+                and store_name like '%${area}%'
+            </if>
+
+            <if test="storeName != null or storeName != ''">
+                and store_name like '%${storeName}%'
+            </if>
+        </trim>
+    </select>
+
+    <select id="selectSignNum" resultType="Integer">
+        SELECT
+        count(1)
+        FROM
+        activity_order
+
+        <trim prefix="where" prefixOverrides="and|or">
+
+            <if test=" activeId != null and activeId != 0">
+                and activity_id = #{activeId}
+            </if>
+
+            <if test=" province != null or province != ''">
+                and store_name like '%${province}%'
+            </if>
+
+            <if test=" city != null or city != ''">
+                and store_name like '%${city}%'
+            </if>
+
+            <if test=" area != null or area != ''">
+                and store_name like '%${area}%'
+            </if>
+
+            <if test="storeName != null or storeName != ''">
+                and store_name like '%${storeName}%'
+            </if>
+            and status = 2
+        </trim>
+    </select>
+
     <select id="selectData" resultType="com.eim.entity.ActivityOrder">
         SELECT
         a.order_id,

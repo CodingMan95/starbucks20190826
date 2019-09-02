@@ -61,6 +61,6 @@ public class ActivityOrder {
     @ApiModelProperty(value = "报名时间", hidden = true)
     private Date addTime;
 
-    @ApiModelProperty(value = "预约状态", hidden = true)
+    @ApiModelProperty(value = "预约状态 为1时预约成功，为2时店员签到成功，为0时活动结束", hidden = true)
     private int status;
 }

@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -101,7 +98,7 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
     }
 
     @Override
-    public Map<String, Object> getStoreLimit(int type, String parm, int activeId) {
+    public Map<String, Object> getStoreLimit(int type, String parm, String cityName, int activeId) {
         ActivityInfo activityInfo = activityInfoService.getOne(new QueryWrapper<ActivityInfo>().select("store_id").eq("active_id", activeId));
         String[] ids = activityInfo.getStoreId().split(",");
         int array[] = new int[ids.length];
@@ -121,14 +118,14 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
             List<String> area = storeInfoMapper.getAreaByCity(parm, array);
             map.put("area", area);
         } else if (type == 3) {
-            List<StoreInfo> store = storeInfoMapper.getStoreByArea(parm, array);
+            List<StoreInfo> store = storeInfoMapper.getStoreByArea(parm, cityName, array);
             map.put("store", store);
         }
         return map;
     }
 
     @Override
-    public Map<String, Object> getAllStore(int type, String parm) {
+    public Map<String, Object> getAllStore(int type, String parm, String cityName) {
         Map<String, Object> map = new HashMap<>();
         //通过省查询市
         if (type == 0) {
@@ -141,7 +138,7 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
             List<String> area = storeInfoMapper.getAllAreaByCity(parm);
             map.put("area", area);
         } else if (type == 3) {
-            List<StoreInfo> store = storeInfoMapper.getAllStoreByArea(parm);
+            List<StoreInfo> store = storeInfoMapper.getAllStoreByArea(parm, cityName);
             map.put("store", store);
         }
         return map;
@@ -151,5 +148,17 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
     public List<StoreInfo> selectStoreByIdSet(int[] ids) {
         List<StoreInfo> storeInfoList = storeInfoMapper.selectStoreByIdSet(ids);
         return storeInfoList;
+    }
+
+    @Override
+    public List<StoreInfo> getStoreByType(int type, String parm) {
+        List<StoreInfo> infos = new ArrayList<>();
+        //通过省查询市
+        if (type == 0) {
+            infos = storeInfoMapper.selectList(new QueryWrapper<StoreInfo>().eq("province", parm).select("id", "store_name"));
+        } else if (type == 1) {
+            infos = storeInfoMapper.selectList(new QueryWrapper<StoreInfo>().eq("city", parm).select("id", "store_name"));
+        }
+        return infos;
     }
 }

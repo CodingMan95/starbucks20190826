@@ -79,4 +79,18 @@ public class OrderController {
         }
         return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.FAIL);
     }
+
+    @ApiOperation("店员确认签到")
+    @GetMapping("sign.do")
+    public ResultTemplate sign(@RequestParam Integer orderId) {
+        if (orderId <= 0) {
+            throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
+        }
+
+        boolean add = orderService.sign(orderId);
+        if (add) {
+            return ResultTemplate.success();
+        }
+        return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.FAIL);
+    }
 }

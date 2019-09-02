@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.eim.entity.ActivityInfo;
+import com.eim.entity.ActivityOrder;
 import com.eim.entity.Combo;
 import com.eim.entity.StoreInfo;
 import com.eim.exception.BusinessException;
@@ -100,7 +101,8 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
                 int length = info.getStoreId().split(",").length;
                 map.put("storeNum", length);
                 //参与活动总人数
-                int peopleNum = orderMapper.getNumOfActive(info.getActiveId());
+                int peopleNum = orderMapper.selectCount(new QueryWrapper<ActivityOrder>().eq("activity_id", info.getActiveId()));
+                //int peopleNum = orderMapper.getNumOfActive(info.getActiveId());
                 map.put("peopleNum", peopleNum);
                 //活动id
                 map.put("activeId", info.getActiveId());
