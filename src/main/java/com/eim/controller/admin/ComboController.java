@@ -30,4 +30,19 @@ public class ComboController {
         }
         return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.FAIL);
     }
+
+    @ApiOperation("删除套餐")
+    @GetMapping("delete.do")
+    public ResultTemplate delete(@RequestParam Integer comboId) {
+        if (null == comboId || comboId <= 0) {
+            throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
+        }
+        boolean delete = comboService.delete(comboId);
+        if (delete) {
+            return ResultTemplate.success();
+        }
+        return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.FAIL);
+
+    }
+
 }

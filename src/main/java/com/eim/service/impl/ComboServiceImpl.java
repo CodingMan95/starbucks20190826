@@ -1,5 +1,6 @@
 package com.eim.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.eim.entity.Combo;
 import com.eim.mapper.ComboMapper;
@@ -33,6 +34,15 @@ public class ComboServiceImpl extends ServiceImpl<ComboMapper, Combo> implements
             return combo.getId();
         }
         return 0;
+    }
+
+    @Override
+    public boolean delete(int id) {
+        int delete = comboMapper.delete(new QueryWrapper<Combo>().eq("id", id));
+        if (delete == 1) {
+            return true;
+        }
+        return false;
     }
 
 }

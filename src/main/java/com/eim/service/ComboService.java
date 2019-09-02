@@ -13,4 +13,6 @@ public interface ComboService extends IService<Combo> {
     List<Combo> selectByIdSet(@Param("ids") int[] ids);
 
     int add(String name, String pic);
+
+    boolean delete(int id);
 }
