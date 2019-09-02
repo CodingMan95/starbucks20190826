@@ -2,8 +2,12 @@ package com.eim.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.eim.entity.ActivityOrder;
 import com.eim.entity.Combo;
+import com.eim.exception.BusinessException;
+import com.eim.kit.ConstantKit;
 import com.eim.mapper.ComboMapper;
+import com.eim.service.ActivityOrderService;
 import com.eim.service.ComboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,8 @@ import java.util.List;
 public class ComboServiceImpl extends ServiceImpl<ComboMapper, Combo> implements ComboService {
     @Autowired
     private ComboMapper comboMapper;
+    @Autowired
+    private ActivityOrderService orderService;
 
     @Override
     public List<Combo> selectByIdSet(int[] ids) {
@@ -38,6 +44,12 @@ public class ComboServiceImpl extends ServiceImpl<ComboMapper, Combo> implements
 
     @Override
     public boolean delete(int id) {
+        //如果该套餐已有人预约，则不允许删除
+        int count = orderService.count(new QueryWrapper<ActivityOrder>().eq("combo_id", id));
+        if (count > 0) {
+            throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.COMBO_ORDERED);
+        }
+
         int delete = comboMapper.delete(new QueryWrapper<Combo>().eq("id", id));
         if (delete == 1) {
             return true;

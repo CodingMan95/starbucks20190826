@@ -68,6 +68,8 @@ public final class ConstantKit {
     public static final String HAVE_STOREID = "店铺编号已存在";
     public static final String HAVE_STORENAME = "店铺名称已存在";
 
+    public static final String COMBO_ORDERED = "该套餐已有人预约，无法删除";
+
     public static final int ORDER_FAIL = 0;
     public static final int ORDER_SUCCESS = 1;
     public static final int ORDER_OVER = 2;

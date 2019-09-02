@@ -37,11 +37,17 @@ public class ComboController {
         if (null == comboId || comboId <= 0) {
             throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
         }
-        boolean delete = comboService.delete(comboId);
-        if (delete) {
-            return ResultTemplate.success();
+
+        try {
+            boolean delete = comboService.delete(comboId);
+            if (delete) {
+                return ResultTemplate.success();
+            }
+            return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.FAIL);
+        } catch (BusinessException e) {
+            e.printStackTrace();
+            return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.COMBO_ORDERED);
         }
-        return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.FAIL);
 
     }
 
