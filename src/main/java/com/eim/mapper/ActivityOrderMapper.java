@@ -16,4 +16,6 @@ public interface ActivityOrderMapper extends BaseMapper<ActivityOrder> {
     int selectTotal(String province, String city, String area, String storeName, Integer activeId);
 
     int selectSignNum(String province, String city, String area, String storeName, Integer activeId);
+
+    int selectOrderNum(String province, String city, String area, String storeName, Integer activeId);
 }

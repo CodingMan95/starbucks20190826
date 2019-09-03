@@ -105,9 +105,14 @@ public class ActivityOrderServiceImpl extends ServiceImpl<ActivityOrderMapper, A
         List<ActivityOrder> orders = activityOrderMapper.selectData(province, city, area, storeName, activeId, start, num);
         int count = activityOrderMapper.selectTotal(province, city, area, storeName, activeId);
         int signNum = activityOrderMapper.selectSignNum(province, city, area, storeName, activeId);
+        int orderNum = activityOrderMapper.selectOrderNum(province, city, area, storeName, activeId);
         map.put("orderList", orders);
+        //总数
         map.put("total", count);
+        //签到人数
         map.put("signNum", signNum);
+        //总条数
+        map.put("orderNum", orderNum);
         return map;
     }
 

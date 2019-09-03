@@ -101,8 +101,8 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
                 int length = info.getStoreId().split(",").length;
                 map.put("storeNum", length);
                 //参与活动总人数
-                int peopleNum = orderMapper.selectCount(new QueryWrapper<ActivityOrder>().eq("activity_id", info.getActiveId()));
-                //int peopleNum = orderMapper.getNumOfActive(info.getActiveId());
+                //int peopleNum = orderMapper.selectCount(new QueryWrapper<ActivityOrder>().eq("activity_id", info.getActiveId()));
+                int peopleNum = orderMapper.getNumOfActive(info.getActiveId());
                 map.put("peopleNum", peopleNum);
                 //活动id
                 map.put("activeId", info.getActiveId());
