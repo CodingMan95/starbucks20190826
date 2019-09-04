@@ -35,4 +35,6 @@ public interface StoreInfoService extends IService<StoreInfo> {
     List<StoreInfo> selectStoreByIdSet(int[] ids);
 
     List<StoreInfo> getStoreByType(int type, String parm);
+
+    List<StoreInfo> getStoreList(String[] ids);
 }

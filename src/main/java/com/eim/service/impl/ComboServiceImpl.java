@@ -1,6 +1,7 @@
 package com.eim.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.eim.entity.ActivityOrder;
 import com.eim.entity.Combo;
@@ -30,13 +31,23 @@ public class ComboServiceImpl extends ServiceImpl<ComboMapper, Combo> implements
     }
 
     @Override
-    public int add(String name, String pic) {
+    public int add(String name, String pic, int id) {
         Combo combo = new Combo();
         combo.setName(name);
         combo.setPic(pic);
-        combo.setCreateTime(new Date());
-        boolean insert = comboMapper.addCombo(combo);
-        if (insert) {
+
+        boolean status;
+        if (id > 0) {
+            combo.setId(id);
+            //更新
+            status = update(combo, new UpdateWrapper<Combo>().eq("id", id));
+        } else {
+            //添加
+            combo.setCreateTime(new Date());
+            status = comboMapper.addCombo(combo);
+        }
+
+        if (status) {
             return combo.getId();
         }
         return 0;

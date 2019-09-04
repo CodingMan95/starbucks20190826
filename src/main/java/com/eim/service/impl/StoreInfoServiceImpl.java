@@ -161,4 +161,10 @@ public class StoreInfoServiceImpl extends ServiceImpl<StoreInfoMapper, StoreInfo
         }
         return infos;
     }
+
+    @Override
+    public List<StoreInfo> getStoreList(String[] ids) {
+        List<StoreInfo> storeInfoList = storeInfoMapper.getStoreList(ids);
+        return storeInfoList;
+    }
 }

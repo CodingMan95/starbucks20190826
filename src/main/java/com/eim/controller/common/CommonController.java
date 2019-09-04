@@ -8,6 +8,7 @@ import com.eim.model.ResultTemplate;
 import com.eim.service.StoreInfoService;
 import com.eim.service.UploadService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -83,4 +84,24 @@ public class CommonController {
         List<StoreInfo> store = storeInfoService.getStoreByType(type, parm);
         return ResultTemplate.success(store);
     }
+
+    @ApiOperation("通过门店列表获取门店对应id列表 ")
+    @ApiImplicitParam(name = "nameList", value = "例子：{\"武汉江夏中百广场店\";\"光谷德国风情街店\";\"南昌铜锣湾广场店\"}", paramType = "query")
+    @PostMapping("getIdList.do")
+    public ResultTemplate getIdList(@RequestParam String nameList) {
+        if (StringUtils.isEmpty(nameList)) {
+            throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
+        }
+
+        if (nameList.startsWith("{") && nameList.endsWith("}") && nameList.contains("\"")) {
+            nameList = nameList.substring(1, nameList.length() - 1).replaceAll("\"", "");
+            String[] names = nameList.split(";");
+
+            List<StoreInfo> storeList = storeInfoService.getStoreList(names);
+
+            return ResultTemplate.success(storeList);
+        }
+        return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.ERROR_STYLE);
+    }
+
 }

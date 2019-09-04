@@ -12,7 +12,7 @@ public interface ComboService extends IService<Combo> {
      */
     List<Combo> selectByIdSet(@Param("ids") int[] ids);
 
-    int add(String name, String pic);
+    int add(String name, String pic, int id);
 
     boolean delete(int id);
 }

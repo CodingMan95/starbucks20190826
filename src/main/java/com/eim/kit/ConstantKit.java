@@ -47,10 +47,7 @@ public final class ConstantKit {
      */
     public static final Integer TOKEN_RESET_TIME = 60 * 30;
 
-    /**
-     * 存放登录用户模型Key的Request Key
-     */
-    public static final String REQUEST_CURRENT_KEY = "REQUEST_CURRENT_KEY";
+        public static final String ERROR_STYLE = "数据格式错误";
 
     /**
      * 缺少参数

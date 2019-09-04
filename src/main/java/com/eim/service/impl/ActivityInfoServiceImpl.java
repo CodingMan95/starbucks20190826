@@ -196,6 +196,7 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
 
         //获取门店列表
         String[] strings = info.getStoreId().split(",");
+
         int storeIds[] = new int[strings.length];
         for (int i = 0; i < strings.length; i++) {
             storeIds[i] = Integer.parseInt(strings[i]);

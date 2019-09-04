@@ -20,13 +20,13 @@ public class ComboController {
 
     @ApiOperation("添加套餐")
     @PostMapping("add.do")
-    public ResultTemplate addCombo(@RequestParam String name, @RequestParam String pic) {
+    public ResultTemplate addCombo(@RequestParam String name, @RequestParam String pic, @RequestParam int comboId) {
         if (StringUtils.isEmpty(name) || StringUtils.isEmpty(pic)) {
             throw new BusinessException(ConstantKit.BAD_REQUEST, ConstantKit.NO_PARAMETER);
         }
-        int comboId = comboService.add(name, pic);
-        if (comboId != 0) {
-            return ResultTemplate.success(comboId);
+        int id = comboService.add(name, pic, comboId);
+        if (id != 0) {
+            return ResultTemplate.success(id);
         }
         return ResultTemplate.error(ConstantKit.BAD_REQUEST, ConstantKit.FAIL);
     }

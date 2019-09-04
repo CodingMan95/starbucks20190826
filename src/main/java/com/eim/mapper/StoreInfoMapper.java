@@ -27,4 +27,6 @@ public interface StoreInfoMapper extends BaseMapper<StoreInfo> {
     List<String> getAllProvince();
 
     List<StoreInfo> selectStoreByIdSet(int[] ids);
+
+    List<StoreInfo> getStoreList(String[] ids);
 }

@@ -75,7 +75,6 @@
         </foreach>
     </select>
 
-
     <select id="getAllProvince" resultType="String">
         SELECT
         province
@@ -122,6 +121,18 @@
         from
         shop_info
         WHERE id IN
+        <foreach collection="array" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+
+    <select id="getStoreList" resultType="com.eim.entity.StoreInfo">
+        SELECT
+        id, store_name, city
+        FROM
+        shop_info
+        WHERE store_id IN
         <foreach collection="array" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
